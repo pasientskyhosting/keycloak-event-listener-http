@@ -26,6 +26,7 @@ import org.keycloak.events.admin.OperationType;
 import java.util.Map;
 import java.util.Set;
 import java.lang.Exception;
+import java.util.Base64;
 
 import okhttp3.*;
 import okhttp3.OkHttpClient.Builder;
@@ -72,7 +73,8 @@ public class HTTPEventListenerProvider implements EventListenerProvider {
             	
 
                 if (this.username != null && this.password != null) {
-                	builder.addHeader("Authorization", "Basic " + this.username + ":" + this.password.toCharArray());
+                    String encodedCredentials = Base64.getEncoder().encodeToString((this.username + ":" + this.password).getBytes());
+                	builder.addHeader("Authorization", "Basic " + encodedCredentials);
                 }
                 
                 Request request = builder.post(jsonRequestBody)
@@ -113,7 +115,8 @@ public class HTTPEventListenerProvider implements EventListenerProvider {
             	
 
                 if (this.username != null && this.password != null) {
-                	builder.addHeader("Authorization", "Basic " + this.username + ":" + this.password.toCharArray());
+                	String encodedCredentials = Base64.getEncoder().encodeToString((this.username + ":" + this.password).getBytes());
+                	builder.addHeader("Authorization", "Basic " + encodedCredentials);
                 }
                 
                 Request request = builder.post(jsonRequestBody)
