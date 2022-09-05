@@ -37,7 +37,7 @@ import java.io.IOException;
  * @author <a href="mailto:jessy.lenne@stadline.com">Jessy Lenne</a>
  */
 public class HTTPEventListenerProvider implements EventListenerProvider {
-	private final OkHttpClient httpClient = new OkHttpClient();
+    private final OkHttpClient httpClient = new OkHttpClient();
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     private Set<EventType> excludedEvents;
     private Set<OperationType> excludedAdminOperations;
@@ -47,7 +47,8 @@ public class HTTPEventListenerProvider implements EventListenerProvider {
     public static final String publisherId = "keycloak";
     public String TOPIC;
 
-    public HTTPEventListenerProvider(Set<EventType> excludedEvents, Set<OperationType> excludedAdminOperations, String serverUri, String username, String password, String topic) {
+    public HTTPEventListenerProvider(Set<EventType> excludedEvents, Set<OperationType> excludedAdminOperations,
+            String serverUri, String username, String password, String topic) {
         this.excludedEvents = excludedEvents;
         this.excludedAdminOperations = excludedAdminOperations;
         this.serverUri = serverUri;
@@ -65,30 +66,32 @@ public class HTTPEventListenerProvider implements EventListenerProvider {
             String stringEvent = toString(event);
             try {
 
-            	okhttp3.RequestBody jsonRequestBody = okhttp3.RequestBody.create(JSON, stringEvent);
+                okhttp3.RequestBody jsonRequestBody = okhttp3.RequestBody.create(JSON, stringEvent);
 
                 okhttp3.Request.Builder builder = new Request.Builder()
                         .url(this.serverUri)
                         .addHeader("User-Agent", "KeycloakHttp Bot");
-            	
 
                 if (this.username != null && this.password != null) {
-                    String encodedCredentials = Base64.getEncoder().encodeToString((this.username + ":" + this.password).getBytes());
-                	builder.addHeader("Authorization", "Basic " + encodedCredentials);
+                    String encodedCredentials = Base64.getEncoder()
+                            .encodeToString((this.username + ":" + this.password).getBytes());
+                    builder.addHeader("Authorization", "Basic " + encodedCredentials);
                 }
-                
+
+                builder.addHeader("Accept", "application/json");
+
                 Request request = builder.post(jsonRequestBody)
                         .build();
-                
-            	Response response = httpClient.newCall(request).execute();
-            	
-            	if (!response.isSuccessful()) {
-            		throw new IOException("Unexpected code " + response);
-            	}
+
+                Response response = httpClient.newCall(request).execute();
+
+                if (!response.isSuccessful()) {
+                    throw new IOException("Unexpected code " + response);
+                }
 
                 // Get response body
                 System.out.println(response.body().string());
-            } catch(Exception e) {
+            } catch (Exception e) {
                 // ?
                 System.out.println("Failed to forward webhook Event " + e.toString());
                 System.out.println("Request body string: " + stringEvent);
@@ -107,30 +110,32 @@ public class HTTPEventListenerProvider implements EventListenerProvider {
             String stringEvent = toString(event);
 
             try {
-            	okhttp3.RequestBody jsonRequestBody = okhttp3.RequestBody.create(JSON, stringEvent);
+                okhttp3.RequestBody jsonRequestBody = okhttp3.RequestBody.create(JSON, stringEvent);
 
                 okhttp3.Request.Builder builder = new Request.Builder()
                         .url(this.serverUri)
                         .addHeader("User-Agent", "KeycloakHttp Bot");
-            	
 
                 if (this.username != null && this.password != null) {
-                	String encodedCredentials = Base64.getEncoder().encodeToString((this.username + ":" + this.password).getBytes());
-                	builder.addHeader("Authorization", "Basic " + encodedCredentials);
+                    String encodedCredentials = Base64.getEncoder()
+                            .encodeToString((this.username + ":" + this.password).getBytes());
+                    builder.addHeader("Authorization", "Basic " + encodedCredentials);
                 }
-                
+
+                builder.addHeader("Accept", "application/json");
+
                 Request request = builder.post(jsonRequestBody)
                         .build();
-                
-            	Response response = httpClient.newCall(request).execute();
-            	
-            	if (!response.isSuccessful()) {
-            		throw new IOException("Unexpected code " + response);
-            	}
+
+                Response response = httpClient.newCall(request).execute();
+
+                if (!response.isSuccessful()) {
+                    throw new IOException("Unexpected code " + response);
+                }
 
                 // Get response body
                 System.out.println(response.body().string());
-            } catch(Exception e) {
+            } catch (Exception e) {
                 // ?
                 System.out.println("Failed to forward webhook AdminEvent " + e.toString());
                 System.out.println("Request body string: " + stringEvent);
@@ -139,7 +144,6 @@ public class HTTPEventListenerProvider implements EventListenerProvider {
             }
         }
     }
-
 
     private String toString(Event event) {
         StringBuilder sb = new StringBuilder();
@@ -175,13 +179,12 @@ public class HTTPEventListenerProvider implements EventListenerProvider {
                 }
                 i = i + 1;
             }
-        sb.append("}}");
+            sb.append("}}");
         }
 
         return sb.toString();
     }
-    
-    
+
     private String toString(AdminEvent adminEvent) {
         StringBuilder sb = new StringBuilder();
 
