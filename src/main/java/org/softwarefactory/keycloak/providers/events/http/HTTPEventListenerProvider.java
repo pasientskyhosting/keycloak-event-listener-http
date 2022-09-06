@@ -66,7 +66,7 @@ public class HTTPEventListenerProvider implements EventListenerProvider {
             String stringEvent = toString(event);
             try {
 
-                okhttp3.RequestBody jsonRequestBody = okhttp3.RequestBody.create(JSON, stringEvent);
+                okhttp3.RequestBody jsonRequestBody = okhttp3.RequestBody.create(stringEvent, JSON);
 
                 okhttp3.Request.Builder builder = new Request.Builder()
                         .url(this.serverUri)
@@ -79,6 +79,7 @@ public class HTTPEventListenerProvider implements EventListenerProvider {
                 }
 
                 builder.addHeader("Accept", "application/json");
+                builder.addHeader("Content-Type", "application/json");
 
                 Request request = builder.post(jsonRequestBody)
                         .build();
@@ -110,7 +111,7 @@ public class HTTPEventListenerProvider implements EventListenerProvider {
             String stringEvent = toString(event);
 
             try {
-                okhttp3.RequestBody jsonRequestBody = okhttp3.RequestBody.create(JSON, stringEvent);
+                okhttp3.RequestBody jsonRequestBody = okhttp3.RequestBody.create(stringEvent, JSON);
 
                 okhttp3.Request.Builder builder = new Request.Builder()
                         .url(this.serverUri)
@@ -123,6 +124,7 @@ public class HTTPEventListenerProvider implements EventListenerProvider {
                 }
 
                 builder.addHeader("Accept", "application/json");
+                builder.addHeader("Content-Type", "application/json");
 
                 Request request = builder.post(jsonRequestBody)
                         .build();
