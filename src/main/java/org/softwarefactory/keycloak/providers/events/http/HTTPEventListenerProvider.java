@@ -66,7 +66,7 @@ public class HTTPEventListenerProvider implements EventListenerProvider {
             String stringEvent = toString(event);
             try {
 
-                okhttp3.RequestBody jsonRequestBody = okhttp3.RequestBody.create(stringEvent, JSON);
+                okhttp3.RequestBody jsonRequestBody = okhttp3.RequestBody.create(JSON, stringEvent);
 
                 okhttp3.Request.Builder builder = new Request.Builder()
                         .url(this.serverUri)
@@ -111,7 +111,7 @@ public class HTTPEventListenerProvider implements EventListenerProvider {
             String stringEvent = toString(event);
 
             try {
-                okhttp3.RequestBody jsonRequestBody = okhttp3.RequestBody.create(stringEvent, JSON);
+                okhttp3.RequestBody jsonRequestBody = okhttp3.RequestBody.create(JSON, stringEvent);
 
                 okhttp3.Request.Builder builder = new Request.Builder()
                         .url(this.serverUri)
