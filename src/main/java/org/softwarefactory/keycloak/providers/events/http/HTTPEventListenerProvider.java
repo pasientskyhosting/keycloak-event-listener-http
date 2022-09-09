@@ -87,7 +87,9 @@ public class HTTPEventListenerProvider implements EventListenerProvider {
                 Response response = httpClient.newCall(request).execute();
 
                 if (!response.isSuccessful()) {
-                    throw new IOException("Unexpected code " + response);
+                    String stringResponse = response.toString();
+                    response.body().close();
+                    throw new IOException("Unexpected code " + stringResponse);
                 }
 
                 // Get response body
@@ -132,7 +134,9 @@ public class HTTPEventListenerProvider implements EventListenerProvider {
                 Response response = httpClient.newCall(request).execute();
 
                 if (!response.isSuccessful()) {
-                    throw new IOException("Unexpected code " + response);
+                    String stringResponse = response.toString();
+                    response.body().close();
+                    throw new IOException("Unexpected code " + stringResponse);
                 }
 
                 // Get response body
