@@ -64,6 +64,7 @@ public class HTTPEventListenerProvider implements EventListenerProvider {
             return;
         } else {
             String stringEvent = toString(event);
+            System.out.println("Event: " + stringEvent);
             try {
 
                 okhttp3.RequestBody jsonRequestBody = okhttp3.RequestBody.create(JSON, stringEvent);
@@ -111,6 +112,7 @@ public class HTTPEventListenerProvider implements EventListenerProvider {
             return;
         } else {
             String stringEvent = toString(event);
+            System.out.println("AdminEvent: " + stringEvent);
 
             try {
                 okhttp3.RequestBody jsonRequestBody = okhttp3.RequestBody.create(JSON, stringEvent);
