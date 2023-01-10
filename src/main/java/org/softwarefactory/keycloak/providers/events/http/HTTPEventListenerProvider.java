@@ -17,21 +17,19 @@
 
 package org.softwarefactory.keycloak.providers.events.http;
 
+import java.io.IOException;
+import java.util.Base64;
+import java.util.Map;
+import java.util.Set;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import org.keycloak.events.Event;
 import org.keycloak.events.EventListenerProvider;
 import org.keycloak.events.EventType;
 import org.keycloak.events.admin.AdminEvent;
 import org.keycloak.events.admin.OperationType;
-
-import java.util.Map;
-import java.util.Set;
-import java.lang.Exception;
-import java.util.Base64;
-
-import okhttp3.*;
-import okhttp3.OkHttpClient.Builder;
-
-import java.io.IOException;
 
 /**
  * @author <a href="mailto:jessy.lenne@stadline.com">Jessy Lenne</a>
@@ -202,8 +200,10 @@ public class HTTPEventListenerProvider implements EventListenerProvider {
         sb.append(adminEvent.getAuthDetails().getRealmId());
         sb.append("\", \"clientId\": \"");
         sb.append(adminEvent.getAuthDetails().getClientId());
-        sb.append("\", \"userId\": \"");
+        sb.append("\", \"performingAdminId\": \"");
         sb.append(adminEvent.getAuthDetails().getUserId());
+        sb.append("\", \"userId\": \"");
+        sb.append(adminEvent.getId());
         sb.append("\", \"ipAddress\": \"");
         sb.append(adminEvent.getAuthDetails().getIpAddress());
         sb.append("\", \"resourcePath\": \"");
