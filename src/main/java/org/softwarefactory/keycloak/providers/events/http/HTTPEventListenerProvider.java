@@ -17,6 +17,8 @@
 
 package org.softwarefactory.keycloak.providers.events.http;
 
+import com.sun.org.slf4j.internal.Logger;
+import com.sun.org.slf4j.internal.LoggerFactory;
 import java.io.IOException;
 import java.util.Base64;
 import java.util.Map;
@@ -35,6 +37,9 @@ import org.keycloak.events.admin.OperationType;
  * @author <a href="mailto:jessy.lenne@stadline.com">Jessy Lenne</a>
  */
 public class HTTPEventListenerProvider implements EventListenerProvider {
+
+    private static Logger LOG = LoggerFactory.getLogger(HTTPEventListenerProvider.class);
+
     private final OkHttpClient httpClient = new OkHttpClient();
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     private Set<EventType> excludedEvents;
@@ -62,6 +67,7 @@ public class HTTPEventListenerProvider implements EventListenerProvider {
             return;
         } else {
             String stringEvent = toString(event);
+            LOG.error("Event: " + event + " stringEvent " + stringEvent);
             System.out.println("Event: " + stringEvent);
             try {
 
@@ -110,6 +116,7 @@ public class HTTPEventListenerProvider implements EventListenerProvider {
             return;
         } else {
             String stringEvent = toString(event);
+            LOG.error("Event: " + event + " stringEvent " + stringEvent);
             System.out.println("AdminEvent: " + stringEvent);
 
             try {
