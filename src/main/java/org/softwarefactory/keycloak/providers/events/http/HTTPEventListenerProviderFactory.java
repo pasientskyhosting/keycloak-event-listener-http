@@ -17,7 +17,8 @@
 
 package org.softwarefactory.keycloak.providers.events.http;
 
-import java.util.logging.Logger;
+import java.util.HashSet;
+import java.util.Set;
 import org.keycloak.Config;
 import org.keycloak.events.EventListenerProvider;
 import org.keycloak.events.EventListenerProviderFactory;
@@ -25,16 +26,14 @@ import org.keycloak.events.EventType;
 import org.keycloak.events.admin.OperationType;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.KeycloakSessionFactory;
-
-import java.util.HashSet;
-import java.util.Set;
-import java.lang.Exception;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author <a href="mailto:jessy.lenne@stadline.com">Jessy Lennee</a>
  */
 public class HTTPEventListenerProviderFactory implements EventListenerProviderFactory {
-    private static final Logger LOG = Logger.getLogger(HTTPEventListenerProviderFactory.class.getCanonicalName());
+    private static final Logger LOG = LoggerFactory.getLogger(HTTPEventListenerProviderFactory.class);
     private Set<EventType> excludedEvents;
     private Set<OperationType> excludedAdminOperations;
     private String serverUri;
@@ -70,7 +69,7 @@ public class HTTPEventListenerProviderFactory implements EventListenerProviderFa
         password = config.get("password", null);
         topic = config.get("topic", "keycloak/events");
 
-        LOG.info(() -> "Forwarding keycloak events to: " + serverUri);
+        LOG.info("Forwarding keycloak events to: {}", serverUri);
     }
 
     @Override
