@@ -17,6 +17,7 @@
 
 package org.softwarefactory.keycloak.providers.events.http;
 
+import java.util.logging.Logger;
 import org.keycloak.Config;
 import org.keycloak.events.EventListenerProvider;
 import org.keycloak.events.EventListenerProviderFactory;
@@ -33,7 +34,7 @@ import java.lang.Exception;
  * @author <a href="mailto:jessy.lenne@stadline.com">Jessy Lennee</a>
  */
 public class HTTPEventListenerProviderFactory implements EventListenerProviderFactory {
-
+    private static final Logger LOG = Logger.getLogger(HTTPEventListenerProviderFactory.class.getCanonicalName());
     private Set<EventType> excludedEvents;
     private Set<OperationType> excludedAdminOperations;
     private String serverUri;
@@ -69,7 +70,7 @@ public class HTTPEventListenerProviderFactory implements EventListenerProviderFa
         password = config.get("password", null);
         topic = config.get("topic", "keycloak/events");
 
-        System.out.println("Forwarding keycloak events to: " + serverUri);
+        LOG.info(() -> "Forwarding keycloak events to: " + serverUri);
     }
 
     @Override

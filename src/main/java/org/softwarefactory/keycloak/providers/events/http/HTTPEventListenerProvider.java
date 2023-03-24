@@ -17,6 +17,8 @@
 
 package org.softwarefactory.keycloak.providers.events.http;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.keycloak.events.Event;
 import org.keycloak.events.EventListenerProvider;
 import org.keycloak.events.EventType;
@@ -37,6 +39,7 @@ import java.io.IOException;
  * @author <a href="mailto:jessy.lenne@stadline.com">Jessy Lenne</a>
  */
 public class HTTPEventListenerProvider implements EventListenerProvider {
+    private static final Logger LOG = Logger.getLogger(HTTPEventListenerProvider.class.getCanonicalName());
     private final OkHttpClient httpClient = new OkHttpClient();
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     private Set<EventType> excludedEvents;
@@ -64,7 +67,7 @@ public class HTTPEventListenerProvider implements EventListenerProvider {
             return;
         } else {
             String stringEvent = toString(event);
-            System.out.println("Event: " + stringEvent);
+            LOG.config(() -> "Event: " + stringEvent);
             try {
 
                 okhttp3.RequestBody jsonRequestBody = okhttp3.RequestBody.create(JSON, stringEvent);
@@ -85,22 +88,25 @@ public class HTTPEventListenerProvider implements EventListenerProvider {
                 Request request = builder.post(jsonRequestBody)
                         .build();
 
-                Response response = httpClient.newCall(request).execute();
+                try (Response response = httpClient.newCall(request).execute()) {
 
-                if (!response.isSuccessful()) {
-                    String stringResponse = response.toString();
-                    response.body().close();
-                    throw new IOException("Unexpected code " + stringResponse);
+                    if (!response.isSuccessful()) {
+                        String stringResponse = response.toString();
+                        if (response.body() != null) {
+                            response.body().close();
+                        }
+                        LOG.severe(() -> request + System.lineSeparator()
+                            + response.code() + " " + stringResponse);
+                        return;
+                    }
+
+                    // Get response body
+                    if (response.body() != null) {
+                        LOG.config(response.body().string());
+                    }
                 }
-
-                // Get response body
-                System.out.println(response.body().string());
             } catch (Exception e) {
-                // ?
-                System.out.println("Failed to forward webhook Event " + e.toString());
-                System.out.println("Request body string: " + stringEvent);
-                e.printStackTrace();
-                return;
+                LOG.log(Level.SEVERE, e, () -> "Failed to forward webhook Event " + stringEvent);
             }
         }
     }
@@ -112,7 +118,7 @@ public class HTTPEventListenerProvider implements EventListenerProvider {
             return;
         } else {
             String stringEvent = toString(event);
-            System.out.println("AdminEvent: " + stringEvent);
+            LOG.config(() -> "AdminEvent: " + stringEvent);
 
             try {
                 okhttp3.RequestBody jsonRequestBody = okhttp3.RequestBody.create(JSON, stringEvent);
@@ -133,22 +139,25 @@ public class HTTPEventListenerProvider implements EventListenerProvider {
                 Request request = builder.post(jsonRequestBody)
                         .build();
 
-                Response response = httpClient.newCall(request).execute();
+                try (Response response = httpClient.newCall(request).execute()) {
 
-                if (!response.isSuccessful()) {
-                    String stringResponse = response.toString();
-                    response.body().close();
-                    throw new IOException("Unexpected code " + stringResponse);
+                    if (!response.isSuccessful()) {
+                        String stringResponse = response.toString();
+                        if (response.body() != null) {
+                            response.body().close();
+                        }
+                        LOG.severe(() -> request + System.lineSeparator()
+                            + response.code() + " " + stringResponse);
+                        return;
+                    }
+
+                    // Get response body
+                    if (response.body() != null) {
+                        LOG.config(response.body().string());
+                    }
                 }
-
-                // Get response body
-                System.out.println(response.body().string());
             } catch (Exception e) {
-                // ?
-                System.out.println("Failed to forward webhook AdminEvent " + e.toString());
-                System.out.println("Request body string: " + stringEvent);
-                e.printStackTrace();
-                return;
+                LOG.log(Level.SEVERE, e, () -> "Failed to forward webhook AdminEvent " + stringEvent);
             }
         }
     }
