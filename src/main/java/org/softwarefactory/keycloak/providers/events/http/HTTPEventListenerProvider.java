@@ -17,29 +17,26 @@
 
 package org.softwarefactory.keycloak.providers.events.http;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Base64;
+import java.util.Map;
+import java.util.Set;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import org.keycloak.events.Event;
 import org.keycloak.events.EventListenerProvider;
 import org.keycloak.events.EventType;
 import org.keycloak.events.admin.AdminEvent;
 import org.keycloak.events.admin.OperationType;
-
-import java.util.Map;
-import java.util.Set;
-import java.lang.Exception;
-import java.util.Base64;
-
-import okhttp3.*;
-import okhttp3.OkHttpClient.Builder;
-
-import java.io.IOException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author <a href="mailto:jessy.lenne@stadline.com">Jessy Lenne</a>
  */
 public class HTTPEventListenerProvider implements EventListenerProvider {
-    private static final Logger LOG = Logger.getLogger(HTTPEventListenerProvider.class.getCanonicalName());
+    private static final Logger LOG = LoggerFactory.getLogger(HTTPEventListenerProvider.class);
     private final OkHttpClient httpClient = new OkHttpClient();
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     private Set<EventType> excludedEvents;
@@ -67,7 +64,7 @@ public class HTTPEventListenerProvider implements EventListenerProvider {
             return;
         } else {
             String stringEvent = toString(event);
-            LOG.config(() -> "Event: " + stringEvent);
+            LOG.debug("Event: {}", stringEvent);
             try {
 
                 okhttp3.RequestBody jsonRequestBody = okhttp3.RequestBody.create(JSON, stringEvent);
@@ -95,18 +92,17 @@ public class HTTPEventListenerProvider implements EventListenerProvider {
                         if (response.body() != null) {
                             response.body().close();
                         }
-                        LOG.severe(() -> request + System.lineSeparator()
-                            + response.code() + " " + stringResponse);
+                        LOG.error("{}{}{} {}", request, System.lineSeparator(), response.code(), stringResponse);
                         return;
                     }
 
                     // Get response body
                     if (response.body() != null) {
-                        LOG.config(response.body().string());
+                        LOG.debug("{}", response.body().string());
                     }
                 }
             } catch (Exception e) {
-                LOG.log(Level.SEVERE, e, () -> "Failed to forward webhook Event " + stringEvent);
+                LOG.error("Failed to forward webhook Event " + stringEvent, e);
             }
         }
     }
@@ -118,7 +114,7 @@ public class HTTPEventListenerProvider implements EventListenerProvider {
             return;
         } else {
             String stringEvent = toString(event);
-            LOG.config(() -> "AdminEvent: " + stringEvent);
+            LOG.debug("AdminEvent: {}", stringEvent);
 
             try {
                 okhttp3.RequestBody jsonRequestBody = okhttp3.RequestBody.create(JSON, stringEvent);
@@ -146,18 +142,17 @@ public class HTTPEventListenerProvider implements EventListenerProvider {
                         if (response.body() != null) {
                             response.body().close();
                         }
-                        LOG.severe(() -> request + System.lineSeparator()
-                            + response.code() + " " + stringResponse);
+                        LOG.error("{}{}{} {}", request, System.lineSeparator(), response.code(), stringResponse);
                         return;
                     }
 
                     // Get response body
                     if (response.body() != null) {
-                        LOG.config(response.body().string());
+                        LOG.debug("{}", response.body().string());
                     }
                 }
             } catch (Exception e) {
-                LOG.log(Level.SEVERE, e, () -> "Failed to forward webhook AdminEvent " + stringEvent);
+                LOG.error("Failed to forward webhook AdminEvent " + stringEvent, e);
             }
         }
     }
