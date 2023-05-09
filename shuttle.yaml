@@ -1,0 +1,7 @@
+plan: 'git://git@github.com:pmpplatform/shuttle-java-plan.git#main'
+
+vars:
+  module: false
+  name: keycloak-event-listener-http
+  git_repo: git@github.com:pmpplatform/keycloak-event-listener-http.git
+  sonarQubeProject: pmpplatform_keycloak-event-listener-http_AYfHT3mCryp_ts6MS4AH
